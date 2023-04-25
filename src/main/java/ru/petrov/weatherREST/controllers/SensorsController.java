@@ -14,6 +14,7 @@ import ru.petrov.weatherREST.services.SensorsService;
 import ru.petrov.weatherREST.util.SensorErrorResponse;
 import ru.petrov.weatherREST.util.SensorNotCreatedException;
 import ru.petrov.weatherREST.util.SensorNotFoundException;
+import ru.petrov.weatherREST.util.SensorValidator;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,11 +25,13 @@ public class SensorsController {
 
     private final SensorsService sensorsService;
     private final ModelMapper mapper;
+    private final SensorValidator sensorValidator;
 
     @Autowired
-    public SensorsController(SensorsService sensorsService, ModelMapper mapper) {
+    public SensorsController(SensorsService sensorsService, ModelMapper mapper, SensorValidator sensorValidator) {
         this.sensorsService = sensorsService;
         this.mapper = mapper;
+        this.sensorValidator = sensorValidator;
     }
 
     @GetMapping
@@ -46,6 +49,8 @@ public class SensorsController {
 
     @PostMapping("/registration")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult) {
+        Sensor sensor = mapper.map(sensorDTO, Sensor.class);
+        sensorValidator.validate(sensor, bindingResult);
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -57,7 +62,7 @@ public class SensorsController {
             }
             throw new SensorNotCreatedException(errorMsg.toString());
         }
-        sensorsService.save(mapper.map(sensorDTO, Sensor.class));
+        sensorsService.save(sensor);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
