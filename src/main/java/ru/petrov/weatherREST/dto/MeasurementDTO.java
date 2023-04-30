@@ -1,14 +1,39 @@
 package ru.petrov.weatherREST.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+
 public class MeasurementDTO {
-    private double value;
+    @NotNull(message = "Значение температуры должно быть заполнено")
+    @Min(value = -100, message = "Температура должна быть больше чем -100")
+    @Max(value = 100, message = "Температура должна быть меньше чем 100")
+    private Double value;
 
-    private boolean raining;
+    @NotNull(message = "Значение дождливости должно быть заполнено.")
+    private Boolean raining;
 
+    @NotNull(message = "Датчик не должен быть пустым.")
     private SensorDTO sensor;
 
     public MeasurementDTO() {
 
+    }
+
+    public Double getValue() {
+        return value;
+    }
+
+    public void setValue(Double value) {
+        this.value = value;
+    }
+
+    public Boolean getRaining() {
+        return raining;
+    }
+
+    public void setRaining(Boolean raining) {
+        this.raining = raining;
     }
 
     public SensorDTO getSensor() {
@@ -18,23 +43,4 @@ public class MeasurementDTO {
     public void setSensor(SensorDTO sensor) {
         this.sensor = sensor;
     }
-
-    public double getValue() {
-        return value;
-    }
-
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    public boolean isRaining() {
-        return raining;
-    }
-
-    public void setRaining(boolean raining) {
-        this.raining = raining;
-    }
-
-
-
 }

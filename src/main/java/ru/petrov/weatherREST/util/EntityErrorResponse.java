@@ -1,11 +1,11 @@
 package ru.petrov.weatherREST.util;
 
-public class SensorErrorResponse {
+public class EntityErrorResponse {
     private String message;
 
     private long timestamp;
 
-    public SensorErrorResponse(String message, long timestamp) {
+    public EntityErrorResponse(String message, long timestamp) {
         this.message = message;
         this.timestamp = timestamp;
     }

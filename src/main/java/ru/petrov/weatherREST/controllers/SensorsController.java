@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.petrov.weatherREST.dto.SensorDTO;
 import ru.petrov.weatherREST.models.Sensor;
 import ru.petrov.weatherREST.services.SensorsService;
-import ru.petrov.weatherREST.util.SensorErrorResponse;
-import ru.petrov.weatherREST.util.SensorNotCreatedException;
+import ru.petrov.weatherREST.util.EntityErrorResponse;
+import ru.petrov.weatherREST.util.EntityNotCreatedException;
 import ru.petrov.weatherREST.util.SensorNotFoundException;
 import ru.petrov.weatherREST.util.SensorValidator;
 
@@ -60,24 +60,24 @@ public class SensorsController {
                         .append(error.getDefaultMessage())
                         .append(";");
             }
-            throw new SensorNotCreatedException(errorMsg.toString());
+            throw new EntityNotCreatedException(errorMsg.toString());
         }
         sensorsService.save(sensor);
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @ExceptionHandler
-    private ResponseEntity<SensorErrorResponse> handleException(SensorNotFoundException e) {
-        SensorErrorResponse response = new SensorErrorResponse(
-                "Sensor with this id not found",
+    private ResponseEntity<EntityErrorResponse> handleException(SensorNotFoundException e) {
+        EntityErrorResponse response = new EntityErrorResponse(
+                "Датчик с таким id не найден",
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler
-    private ResponseEntity<SensorErrorResponse> handleException(SensorNotCreatedException e) {
-        SensorErrorResponse response = new SensorErrorResponse(
+    private ResponseEntity<EntityErrorResponse> handleException(EntityNotCreatedException e) {
+        EntityErrorResponse response = new EntityErrorResponse(
                 e.getMessage(),
                 System.currentTimeMillis()
         );

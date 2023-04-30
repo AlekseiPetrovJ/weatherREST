@@ -1,6 +1,9 @@
 package ru.petrov.weatherREST.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
@@ -13,13 +16,19 @@ public class Measurement {
     private int id;
 
     @Column(name = "temperature_value")
-    private double value;
+    @NotNull(message = "Значение температуры должно быть заполнено")
+    @Min(value = -100, message = "Температура должна быть больше чем -100")
+    @Max(value = 100, message = "Температура должна быть меньше чем 100")
+    private Double value;
 
     @Column(name = "raining")
-    private boolean raining;
+    @NotNull(message = "Значение дождливости должно быть заполнено")
+    private Boolean raining;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "sensor_id", referencedColumnName = "id")
+    @NotNull(message = "Датчик не должен быть пустым.")
     private Sensor sensor;
 
     @Column(name = "created_at")
@@ -36,19 +45,19 @@ public class Measurement {
         this.id = id;
     }
 
-    public double getValue() {
+    public Double getValue() {
         return value;
     }
 
-    public void setValue(double value) {
+    public void setValue(Double value) {
         this.value = value;
     }
 
-    public boolean isRaining() {
+    public Boolean getRaining() {
         return raining;
     }
 
-    public void setRaining(boolean raining) {
+    public void setRaining(Boolean raining) {
         this.raining = raining;
     }
 
