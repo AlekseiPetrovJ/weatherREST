@@ -1,6 +1,7 @@
 package ru.petrov.weatherREST.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.petrov.weatherREST.models.Sensor;
@@ -34,6 +35,7 @@ public class SensorsService {
         return sensorsRepository.findByName(name);
     }
 
+//    @PreAuthorize("hasRole('ROLE_ADMIN'))
     @Transactional
     public void save(Sensor sensor) {
         sensorsRepository.save(sensor);

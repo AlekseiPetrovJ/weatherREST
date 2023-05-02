@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Login page</title>
+</head>
+<body>
+
+<!--"/process_login" - адрес может быть любой, но его же нужно настроить в SpringConfig-->
+<!--"username" и "password" - Должны называться строго так, иначе Spring Security их не обработает-->
+<form name="f" method="post" action="/process_login">
+<!--  скрытое поле с токеном для защиты от csrf.
+_csrf.parameterName с таким ключем нам будет передано значение самим Spring security-->
+<!--  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+<!--  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+
+  <label for="username">Введите имя пользователя: </label>
+  <input type="text" name="username" id="username"/>
+  <br/>
+  <label for="password">Введите пароль: </label>
+  <input type="password" name="password" id="password"/>
+  <br/>
+  <input type="submit" value="Login"/>
+
+  <div th:if="${param.error}" style="color: red">
+    Неправильные имя или пароль
+  </div>
+</form>
+
+</body>
+</html>
