@@ -13,4 +13,9 @@ public class AuthController {
         return "auth/login";
     }
 
+    @GetMapping("/logout")
+    public String logoutPage() {
+        return "auth/logout";
+    }
+
 }

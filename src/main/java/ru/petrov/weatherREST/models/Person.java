@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 @Table(name = "Person")
 public class Person {
 
-    //TODO Добавить валидацию полей
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)

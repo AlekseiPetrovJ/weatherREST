@@ -35,7 +35,7 @@ public class SensorsService {
         return sensorsRepository.findByName(name);
     }
 
-//    @PreAuthorize("hasRole('ROLE_ADMIN'))
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     public void save(Sensor sensor) {
         sensorsRepository.save(sensor);
