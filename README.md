@@ -11,6 +11,7 @@ REST сервис по регистрации погодных данных
 - Spring MVC
 - Maven
 - Spring security (в том числе @PreAythorize)
+- Logback
 
 ## API реализует следующие возможности:
 
