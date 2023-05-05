@@ -1,3 +1,5 @@
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2e165f73844a95b9f24047685fc29c)](https://app.codacy.com/gh/AlekseiPetrovJ/weatherREST/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+
 REST сервис по регистрации погодных данных
 ===============================
 
