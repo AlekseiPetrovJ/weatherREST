@@ -10,14 +10,15 @@ REST сервис по регистрации погодных данных
 - Spring validator
 - Spring MVC
 - Maven
-- Spring security (в том числе @PreAythorize)
+- Spring security (including @PreAythorize)
+- Authentication with JSON Web Token (JWT)
 - Logback
 
 ## API реализует следующие возможности:
 
 ### Пользователи без авторизации:
 
-1) Login/logout
+1) Login
 2) Получение списка всех датчиков
 
 ### Роль USER дополнительно получает:
@@ -56,125 +57,26 @@ password: 123123
 
 The REST API to the example app is described below.
 
-## Get html for authorization
-
-### Request
-
-`GET /auth/login/`
-
-    curl --location 'http://localhost:8080/auth/login'
-
-### Response
-    Content-Type: text/html;charset=UTF-8 
-    Status: 200 OK
-
-<details>
-<summary>Подробнее ...</summary>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Login page</title>
-</head>
-<body>
-
-<form name="f" method="post" action="/process_login">
-
-<label for="username">Введите имя пользователя: </label>
-<input type="text" name="username" id="username"/>
-<br/>
-<label for="password">Введите пароль: </label>
-<input type="password" name="password" id="password"/>
-<br/>
-<input type="submit" value="Login"/>
-
-
-</form>
-
-</body>
-</html>
-</details>
-    
-
 ## Login
 
 ### Request
 
 `POST /process_login`
 
-    curl --location 'http://localhost:8080/process_login' \
-    --form 'username="admin"' \
-    --form 'password="123123"'
+`curl --location 'http://localhost:8080/auth/login' \
+--header 'Content-Type: application/json' \
+--data '{
+"username": "admin",
+"password": "123123"
+}'`
 
 ### Response
-    Content-Type: text/html;charset=UTF-8 
+
     Status: 200 OK
 
-<details>
-<summary>Подробнее ...</summary>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Logout</title>
-</head>
-<body>
-<form action="/logout" method="POST">
-    <input type="submit" value="Logout"/>
-</form>
-</body>
-</html>
-</details>
-
-## Logout
-
-### Request
-
-`POST /logout`
-
-    curl --location 'http://localhost:8080/logout' \
-    --header 'Content-Type: application/json' \
-    --header 'Cookie: JSESSIONID=AE5E56044E4189B40F065F8E60F5204E' \
-    --data '
-    '
-
-### Response
-    Content-Type: text/html;charset=UTF-8 
-    Status: 200 OK
-
-<details>
-<summary>Подробнее ...</summary>
-
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-	<meta charset="UTF-8">
-	<title>Login page</title>
-</head>
-
-<body>
-
-<form name="f" method="post" action="/process_login">
-
-<label for="username">Введите имя пользователя: </label>
-<input type="text" name="username" id="username"/>
-<br/>
-<label for="password">Введите пароль: </label>
-<input type="password" name="password" id="password"/>
-<br/>
-<input type="submit" value="Login"/>
-
-
-</form>
-
-</body>
-
-</html>
-</details>
-
+`{
+"jwt-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgyMzk3LCJpc3MiOiJ3ZWF0aGVyUkVTVCIsImV4cCI6MTY4Mzc4NTk5N30.Kg6s4enSAyEwAKbTd3NOjKTfogsAaiHR4dKeBnRJ7us"
+}`
 
 ## Get list sensors
 
@@ -197,7 +99,8 @@ The REST API to the example app is described below.
 
 `GET /measurements`
 
-    curl --location 'http://localhost:8080/measurements' 
+`curl --location 'http://localhost:8080/measurements' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'`
 
 ### Response
 
@@ -210,11 +113,10 @@ The REST API to the example app is described below.
 
 ### Request
 
-`GET /measurements`
+`GET /measurements/rainyDaysCount`
 
-    curl --location 'http://localhost:8080/measurements/rainyDaysCount' \
-    --header 'Cookie: JSESSIONID=AE5E56044E4189B40F065F8E60F5204E' 
-
+`curl --location 'http://localhost:8080/measurements/rainyDaysCount' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'`
 ### Response
 
     Content-Type: application/json
@@ -228,12 +130,13 @@ The REST API to the example app is described below.
 
 `POST /sensors/registration`
 
-    curl --location 'http://localhost:8080/sensors/registration' \
-    --header 'Content-Type: application/json' \
-    --header 'Cookie: JSESSIONID=AE5E56044E4189B40F065F8E60F5204E' \
-    --data '{
-    "name": "Ufa 22"
-} 
+`curl --location 'http://localhost:8080/sensors/registration' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
+--header 'Content-Type: application/json' \
+--data '{
+"name": "Ufa 22"
+}
+'` 
 
 ### Response
 
@@ -248,17 +151,17 @@ The REST API to the example app is described below.
 
 `POST /measurements/add`
 
-    curl --location 'http://localhost:8080/measurements/add' \
-    --header 'Content-Type: application/json' \
-    --header 'Cookie: JSESSIONID=AE5E56044E4189B40F065F8E60F5204E' \
-    --data '{
-    "value": 10,
-    "raining": 1,
-    "sensor": {
-    "name": "Ufa 22"
-    }
-    }
-    '
+`curl --location 'http://localhost:8080/measurements/add' \
+--header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
+--header 'Content-Type: application/json' \
+--data '{
+"value": 10,
+"raining": 1,
+"sensor": {
+"name": "Ufa 22"
+}
+}
+'`
 
 ### Response
 

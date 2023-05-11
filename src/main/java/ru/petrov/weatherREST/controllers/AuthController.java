@@ -1,21 +1,41 @@
 package ru.petrov.weatherREST.controllers;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.*;
+import ru.petrov.weatherREST.dto.PersonDTO;
+import ru.petrov.weatherREST.security.JWTUtil;
 
-@Controller
+import java.util.Map;
+
+@RestController
 @RequestMapping("/auth")
 public class AuthController {
 
-    @GetMapping("/login")
-    public String loginPage() {
-        return "auth/login";
+    private final JWTUtil jwtUtil;
+
+    private final AuthenticationManager authenticationManager;
+
+    @Autowired
+    public AuthController(JWTUtil jwtUtil, AuthenticationManager authenticationManager) {
+        this.jwtUtil = jwtUtil;
+        this.authenticationManager = authenticationManager;
     }
 
-    @GetMapping("/logout")
-    public String logoutPage() {
-        return "auth/logout";
-    }
+    @PostMapping("/login")
+    public Map<String, String> performLogin(@RequestBody PersonDTO personDTO) {
+        UsernamePasswordAuthenticationToken authInputToken =
+                new UsernamePasswordAuthenticationToken(personDTO.getUsername(),
+                        personDTO.getPassword());
 
+        try {
+            authenticationManager.authenticate(authInputToken);
+        } catch (BadCredentialsException e) {
+            return Map.of("message", "Incorrect credentials!");
+        }
+        String token = jwtUtil.generateToken(personDTO.getUsername());
+        return Map.of("jwt-token", token);
+    }
 }
