@@ -61,14 +61,14 @@ The REST API to the example app is described below.
 
 ### Request
 
-`POST /process_login`
-
-`curl --location 'http://localhost:8080/auth/login' \
---header 'Content-Type: application/json' \
---data '{
-"username": "admin",
-"password": "123123"
-}'`
+`POST /auth/login`
+    
+    curl --location 'http://localhost:8080/auth/login' \
+    --header 'Content-Type: application/json' \
+    --data '{
+    "username": "admin",
+    "password": "123123"
+    }'
 
 ### Response
 
@@ -99,8 +99,8 @@ The REST API to the example app is described below.
 
 `GET /measurements`
 
-`curl --location 'http://localhost:8080/measurements' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'`
+    curl --location 'http://localhost:8080/measurements' \
+    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'
 
 ### Response
 
@@ -115,8 +115,9 @@ The REST API to the example app is described below.
 
 `GET /measurements/rainyDaysCount`
 
-`curl --location 'http://localhost:8080/measurements/rainyDaysCount' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'`
+    curl --location 'http://localhost:8080/measurements/rainyDaysCount' \
+    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'
+
 ### Response
 
     Content-Type: application/json
@@ -130,13 +131,13 @@ The REST API to the example app is described below.
 
 `POST /sensors/registration`
 
-`curl --location 'http://localhost:8080/sensors/registration' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
---header 'Content-Type: application/json' \
---data '{
-"name": "Ufa 22"
-}
-'` 
+    curl --location 'http://localhost:8080/sensors/registration' \
+    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
+    --header 'Content-Type: application/json' \
+    --data '{
+    "name": "Ufa 22"
+    }
+    '
 
 ### Response
 
@@ -151,17 +152,17 @@ The REST API to the example app is described below.
 
 `POST /measurements/add`
 
-`curl --location 'http://localhost:8080/measurements/add' \
---header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
---header 'Content-Type: application/json' \
---data '{
-"value": 10,
-"raining": 1,
-"sensor": {
-"name": "Ufa 22"
-}
-}
-'`
+    curl --location 'http://localhost:8080/measurements/add' \
+    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
+    --header 'Content-Type: application/json' \
+    --data '{
+    "value": 10,
+    "raining": 1,
+    "sensor": {
+    "name": "Ufa 22"
+    }
+    }
+    '
 
 ### Response
 
