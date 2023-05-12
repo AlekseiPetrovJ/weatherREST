@@ -1,5 +1,7 @@
 package ru.petrov.weatherREST.controllers;
 
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sensors")
+@SecurityRequirement(name = "bearerAuth")
 public class SensorsController {
 
     private final SensorsService sensorsService;
@@ -43,6 +46,7 @@ public class SensorsController {
     }
 
     @GetMapping("/{id}")
+    @Hidden
     public SensorDTO getPerson(@PathVariable("id") int id) {
         return mapper.map(sensorsService.findOne(id), SensorDTO.class);
     }
