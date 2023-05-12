@@ -12,6 +12,7 @@ REST сервис по регистрации погодных данных
 - Maven
 - Spring security (including @PreAythorize)
 - Authentication with JSON Web Token (JWT)
+- Swagger (OpenAPI)
 - Logback
 
 ## API реализует следующие возможности:
@@ -52,6 +53,8 @@ password: 123123
 
 login: user  
 password: 123123
+
+### <a href="http://localhost:8080/swagger-ui/index.html">Swagger UI</a>
 
 ### <a href="WeatherREST.postman_collection.json">Postman JSON</a>
 
