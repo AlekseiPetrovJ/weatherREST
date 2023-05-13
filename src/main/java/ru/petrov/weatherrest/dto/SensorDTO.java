@@ -18,7 +18,4 @@ public class SensorDTO {
         this.name = name;
     }
 
-    public SensorDTO() {
-
-    }
 }

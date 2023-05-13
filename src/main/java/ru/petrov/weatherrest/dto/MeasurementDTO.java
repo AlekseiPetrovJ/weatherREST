@@ -16,10 +16,6 @@ public class MeasurementDTO {
     @NotNull(message = "Датчик не должен быть пустым.")
     private SensorDTO sensor;
 
-    public MeasurementDTO() {
-
-    }
-
     public Double getValue() {
         return value;
     }

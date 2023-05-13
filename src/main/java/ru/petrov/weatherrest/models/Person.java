@@ -20,9 +20,6 @@ public class Person {
     @Column(name = "role")
     private String role;
 
-    public Person() {
-    }
-
     public String getRole() {
         return role;
     }
