@@ -9,11 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.petrov.weatherrest.dto.MeasurementDTO;
 import ru.petrov.weatherrest.models.Measurement;
 import ru.petrov.weatherrest.services.MeasurementsService;
 import ru.petrov.weatherrest.util.EntityNotCreatedException;
 import ru.petrov.weatherrest.util.ErrorResponse;
+import ru.petrov.weatherrest.util.MeasurementNotFoundException;
 import ru.petrov.weatherrest.util.MeasurementValidator;
 
 import java.time.LocalDateTime;
@@ -44,15 +46,21 @@ public class MeasurementsController {
                 .collect(Collectors.toList());
     }
 
+    @GetMapping("/{id}")
+    public MeasurementDTO getMeasurement(@PathVariable("id") int id) {
+        return mapper.map(measurementsService.findOne(id), MeasurementDTO.class);
+    }
+
     @GetMapping("/rainyDaysCount")
     public int getRainyDaysCount() {
         return measurementsService.getRainyDaysCount(true);
     }
 
-    @PostMapping("/add")
+    @PostMapping()
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid MeasurementDTO measurementDTO,
                                              BindingResult bindingResult) {
         Measurement measurement = mapper.map(measurementDTO, Measurement.class);
+        measurement.setId(0);
         measurementValidator.validate(measurement, bindingResult);
 
         if (bindingResult.hasErrors()) {
@@ -69,7 +77,8 @@ public class MeasurementsController {
         measurement.setCreatedAt(LocalDateTime.now());
 
         measurementsService.save(measurement);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(measurement.getId()).toUri()).build();
+
     }
 
     @ExceptionHandler
@@ -79,5 +88,14 @@ public class MeasurementsController {
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse> handleException(MeasurementNotFoundException e) {
+        ErrorResponse response = new ErrorResponse(
+                "Измерение с таким id не найдено",
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }

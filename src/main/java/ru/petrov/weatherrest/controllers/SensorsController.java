@@ -1,6 +1,5 @@
 package ru.petrov.weatherrest.controllers;
 
-import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
@@ -10,11 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.petrov.weatherrest.dto.SensorDTO;
 import ru.petrov.weatherrest.models.Sensor;
 import ru.petrov.weatherrest.services.SensorsService;
-import ru.petrov.weatherrest.util.ErrorResponse;
 import ru.petrov.weatherrest.util.EntityNotCreatedException;
+import ru.petrov.weatherrest.util.ErrorResponse;
 import ru.petrov.weatherrest.util.SensorNotFoundException;
 import ru.petrov.weatherrest.util.SensorValidator;
 
@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/sensors")
-@SecurityRequirement(name = "bearerAuth")
 public class SensorsController {
 
     private final SensorsService sensorsService;
@@ -46,14 +45,15 @@ public class SensorsController {
     }
 
     @GetMapping("/{id}")
-    @Hidden
     public SensorDTO getPerson(@PathVariable("id") int id) {
         return mapper.map(sensorsService.findOne(id), SensorDTO.class);
     }
 
-    @PostMapping("/registration")
+    @PostMapping()
+    @SecurityRequirement(name = "bearerAuth")
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult) {
         Sensor sensor = mapper.map(sensorDTO, Sensor.class);
+        sensor.setId(0);
         sensorValidator.validate(sensor, bindingResult);
         if (bindingResult.hasErrors()) {
             StringBuilder errorMsg = new StringBuilder();
@@ -67,7 +67,7 @@ public class SensorsController {
             throw new EntityNotCreatedException(errorMsg.toString());
         }
         sensorsService.save(sensor);
-        return ResponseEntity.ok(HttpStatus.OK);
+        return ResponseEntity.created(ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(sensor.getId()).toUri()).build();
     }
 
     @ExceptionHandler

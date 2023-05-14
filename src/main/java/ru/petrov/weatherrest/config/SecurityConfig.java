@@ -41,7 +41,7 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/auth/login", "/error", "/sensors", "/api-docs/**", "/swagger-ui*/**").permitAll()
+                .requestMatchers("/auth/login", "/error", "/sensors*/**", "/api-docs/**", "/swagger-ui*/**").permitAll()
                 .anyRequest().hasAnyRole("USER", "ADMIN")
                 .and()
                 .sessionManagement()
