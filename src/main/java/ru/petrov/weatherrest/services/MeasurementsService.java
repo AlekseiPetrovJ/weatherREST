@@ -9,6 +9,7 @@ import ru.petrov.weatherrest.util.MeasurementNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -37,6 +38,7 @@ public class MeasurementsService {
     }
 
     public int getRainyDaysCount(boolean raining) {
-        return measurementRepository.findByRaining(raining).size();
+        return measurementRepository.findByRaining(true).stream()
+                .collect(Collectors.groupingBy(Measurement::getCreatedDate)).size();
     }
 }

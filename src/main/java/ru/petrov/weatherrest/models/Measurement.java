@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -34,6 +35,9 @@ public class Measurement {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public LocalDate getCreatedDate(){
+        return createdAt.toLocalDate();
+    }
     public int getId() {
         return id;
     }
