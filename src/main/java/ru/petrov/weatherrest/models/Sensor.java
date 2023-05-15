@@ -14,7 +14,7 @@ public class Sensor {
 
     @NotEmpty(message = "Имя датчика не должно быть пустым")
     @Size(min = 3, max = 60, message = "Имя должно содержать от 3 до 30 символов")
-    @Column(name = "name")
+    @Column(unique = true, name = "name")
     private String name;
 
     public Sensor(String sensorName) {
