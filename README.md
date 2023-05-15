@@ -1,12 +1,11 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2e165f73844a95b9f24047685fc29c)](https://app.codacy.com/gh/AlekseiPetrovJ/weatherREST/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 
 
-REST сервис по регистрации погодных данных
-===============================
+# REST сервис по регистрации погодных данных
 
 ## REST API спроектирован и разработан на стеке:
 
--   JPA. Hibernate (Postgres SQL, H2 SQL)
+-   JPA. Hibernate (H2 SQL)
 -   Spring Boot 3
 -   Spring validator
 -   Spring MVC
@@ -48,129 +47,12 @@ REST сервис по регистрации погодных данных
 
 # REST API
 
-### Credentials:
+## Credentials:
 login: admin  
 password: 123123
 
 login: user  
 password: 123123
 
-### <a href="http://localhost:8080/swagger-ui/index.html">Swagger UI</a>
-
-### <a href="WeatherREST.postman_collection.json">Postman JSON</a>
-
-The REST API to the example app is described below.
-
-## Login
-
-### Request
-
-`POST /auth/login`
-    
-    curl --location 'http://localhost:8080/auth/login' \
-    --header 'Content-Type: application/json' \
-    --data '{
-    "username": "admin",
-    "password": "123123"
-    }'
-
-### Response
-
-    Status: 200 OK
-
-`{
-"jwt-token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgyMzk3LCJpc3MiOiJ3ZWF0aGVyUkVTVCIsImV4cCI6MTY4Mzc4NTk5N30.Kg6s4enSAyEwAKbTd3NOjKTfogsAaiHR4dKeBnRJ7us"
-}`
-
-## Get list sensors
-
-### Request
-
-  `GET /sensors`
-
-    curl --location 'http://localhost:8080/sensors' 
-
-### Response
-
-    Content-Type: application/json
-    Status: 200 OK
-
-    [{"name":"New York 1"},{"name":"New York 2"},{"name":"Moscow 1"},{"name":"London 1"}]
-
-## Get measurements
-
-### Request
-
-`GET /measurements`
-
-    curl --location 'http://localhost:8080/measurements' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'
-
-### Response
-
-    Content-Type: application/json
-    Status: 200 OK
-
-    [{"value":25.0,"raining":false,"sensor":{"name":"New York 1"}},{"value":28.7,"raining":false,"sensor":{"name":"New York 1"}},{"value":29.0,"raining":false,"sensor":{"name":"New York 1"}},{"value":-25.0,"raining":true,"sensor":{"name":"New York 2"}},{"value":10.0,"raining":false,"sensor":{"name":"Moscow 1"}}]
-
-## Get rainy measurements
-
-### Request
-
-`GET /measurements/rainyDaysCount`
-
-    curl --location 'http://localhost:8080/measurements/rainyDaysCount' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE'
-
-### Response
-
-    Content-Type: application/json
-    Status: 200 OK
-
-    2
-
-## Add sensors
-
-### Request
-
-`POST /sensors/registration`
-
-    curl --location 'http://localhost:8080/sensors/registration' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
-    --header 'Content-Type: application/json' \
-    --data '{
-    "name": "Ufa 22"
-    }
-    '
-
-### Response
-
-    Content-Type: application/json
-    Status: 200 OK
-
-    "OK"
-
-## Add measurement
-
-### Request
-
-`POST /measurements/add`
-
-    curl --location 'http://localhost:8080/measurements/add' \
-    --header 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJVc2VyIGRldGFpbHMiLCJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNjgzNzgxMjg3LCJpc3MiOiJwZXRyb3YiLCJleHAiOjE2ODM3ODQ4ODd9.jz7LbsYMv4xbVGwxSBz7bMcCXF285n-HXw6WqlzP4bE' \
-    --header 'Content-Type: application/json' \
-    --data '{
-    "value": 10,
-    "raining": 1,
-    "sensor": {
-    "name": "Ufa 22"
-    }
-    }
-    '
-
-### Response
-
-    Content-Type: application/json
-    Status: 200 OK
-
-    "OK"
+## OpenAPI
+<a href="http://localhost:8080/swagger-ui/index.html">Swagger UI</a>
