@@ -51,6 +51,7 @@ public class SensorsController {
 
     @PostMapping()
     @SecurityRequirement(name = "bearerAuth")
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid SensorDTO sensorDTO, BindingResult bindingResult) {
         Sensor sensor = mapper.map(sensorDTO, Sensor.class);
         sensor.setId(0);
@@ -71,6 +72,7 @@ public class SensorsController {
     }
 
     @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
     private ResponseEntity<ErrorResponse> handleException(SensorNotFoundException e) {
         ErrorResponse response = new ErrorResponse(
                 "Датчик с таким id не найден",
@@ -80,6 +82,7 @@ public class SensorsController {
     }
 
     @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     private ResponseEntity<ErrorResponse> handleException(EntityNotCreatedException e) {
         ErrorResponse response = new ErrorResponse(
                 e.getMessage(),

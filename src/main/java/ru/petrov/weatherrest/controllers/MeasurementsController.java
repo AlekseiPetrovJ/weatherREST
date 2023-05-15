@@ -57,6 +57,7 @@ public class MeasurementsController {
     }
 
     @PostMapping()
+    @ResponseStatus(code = HttpStatus.CREATED)
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid MeasurementDTO measurementDTO,
                                              BindingResult bindingResult) {
         Measurement measurement = mapper.map(measurementDTO, Measurement.class);
@@ -82,6 +83,7 @@ public class MeasurementsController {
     }
 
     @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
     private ResponseEntity<ErrorResponse> handleException(EntityNotCreatedException e) {
         ErrorResponse response = new ErrorResponse(
                 e.getMessage(),
@@ -91,6 +93,7 @@ public class MeasurementsController {
     }
 
     @ExceptionHandler
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
     private ResponseEntity<ErrorResponse> handleException(MeasurementNotFoundException e) {
         ErrorResponse response = new ErrorResponse(
                 "Измерение с таким id не найдено",
