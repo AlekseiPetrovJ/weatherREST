@@ -1,41 +1,25 @@
 package ru.petrov.weatherrest.controllers;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.*;
-import ru.petrov.weatherrest.dto.PersonDTO;
-import ru.petrov.weatherrest.security.JWTUtil;
-
-import java.util.Map;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.petrov.weatherrest.services.TokenService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping(path = "/api/auth", produces = "text/plain")
+@SecurityRequirement(name = "basicAuth")
 public class AuthController {
 
-    private final JWTUtil jwtUtil;
+    private final TokenService tokenService;
 
-    private final AuthenticationManager authenticationManager;
-
-    @Autowired
-    public AuthController(JWTUtil jwtUtil, AuthenticationManager authenticationManager) {
-        this.jwtUtil = jwtUtil;
-        this.authenticationManager = authenticationManager;
+    public AuthController(TokenService tokenService) {
+        this.tokenService = tokenService;
     }
 
-    @PostMapping("/login")
-    public Map<String, String> performLogin(@RequestBody PersonDTO personDTO) {
-        UsernamePasswordAuthenticationToken authInputToken =
-                new UsernamePasswordAuthenticationToken(personDTO.getUsername(),
-                        personDTO.getPassword());
-
-        try {
-            authenticationManager.authenticate(authInputToken);
-        } catch (BadCredentialsException e) {
-            return Map.of("message", "Incorrect credentials!");
-        }
-        String token = jwtUtil.generateToken(personDTO.getUsername());
-        return Map.of("jwt-token", token);
+    @PostMapping("/token")
+    public String token(Authentication authentication) {
+        return tokenService.generateToken(authentication);
     }
 }

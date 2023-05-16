@@ -1,69 +1,81 @@
 package ru.petrov.weatherrest.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.petrov.weatherrest.services.PersonDetailsService;
+
+import javax.crypto.spec.SecretKeySpec;
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final PersonDetailsService personDetailsService;
+    @Value("${jwt.key}")
+    private String jwtKey;
+    @Value("${jwt.user}")
+    private String jwtUser;
+    @Value("${jwt.user.password}")
+    private String jwtUserPassword;
 
-    private final JWTFilter jwtFilter;
+    @Bean
+    public UserDetailsService userDetailsService() {
 
-    @Autowired
-    public SecurityConfig(PersonDetailsService personDetailsService, JWTFilter jwtFilter) {
-        this.personDetailsService = personDetailsService;
-        this.jwtFilter = jwtFilter;
-    }
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(personDetailsService);
+        return new InMemoryUserDetailsManager(
+                User.withUsername(jwtUser)
+                        .password("{noop}" + jwtUserPassword)
+                        .authorities("READ", "ROLE_USER")
+                        .build());
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-                .csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/auth/login", "/error", "/sensors*/**", "/api-docs/**", "/swagger-ui*/**").permitAll()
-                .anyRequest().hasAnyRole("USER", "ADMIN")
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        return http
 
-        return http.build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http, PasswordEncoder passwordEncoder, PersonDetailsService personDetailsService)
-            throws Exception {
-        return http.getSharedObject(AuthenticationManagerBuilder.class)
-                .userDetailsService(personDetailsService)
-                .passwordEncoder(passwordEncoder)
-                .and()
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/auth/token").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/sensors*/**").permitAll()
+                        .requestMatchers("/swagger-ui*/**").permitAll()
+                        .requestMatchers("/api-docs/**").permitAll()
+                        .anyRequest().hasAuthority("SCOPE_READ")
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+                .httpBasic(withDefaults())
                 .build();
     }
 
     @Bean
-    public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+    JwtEncoder jwtEncoder() {
+        return new NimbusJwtEncoder(new ImmutableSecret<>(jwtKey.getBytes()));
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        byte[] bytes = jwtKey.getBytes();
+        SecretKeySpec originalKey = new SecretKeySpec(bytes, 0, bytes.length, "RSA");
+        return NimbusJwtDecoder.withSecretKey(originalKey).macAlgorithm(MacAlgorithm.HS512).build();
     }
 }
 
