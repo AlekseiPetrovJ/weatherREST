@@ -15,6 +15,7 @@
 -   Authentication with JSON Web Token (JWT)
 -   Swagger (OpenAPI)
 -   Logback
+-   Junit
 
 ## API реализует следующие возможности:
 
