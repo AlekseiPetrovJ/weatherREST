@@ -1,7 +1,8 @@
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2e165f73844a95b9f24047685fc29c)](https://app.codacy.com/gh/AlekseiPetrovJ/weatherREST/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ec2e165f73844a95b9f24047685fc29c)](https://app.codacy.com/gh/AlekseiPetrovJ/weatherREST/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade) 
 
 # REST сервис по регистрации погодных данных
+
+### <a href="ТЗ.pdf">Техническое задание</a>
 
 ## REST API спроектирован и разработан на стеке:
 
@@ -23,7 +24,7 @@
 
 ### Пользователь BasicAuth:
 
-1) доступ к получению токена JWT
+1)  Доступ к получению токена JWT
 
 ### Авторизованный пользователь получает:
 
@@ -36,7 +37,7 @@
 Датчик с таким названием должен быть зарегистрирован в системе (должен быть в БД).
 Если такого датчика нет в БД - выдавать ошибку_
 
-3)  Получение количества дождливых измерений
+3)  Получение количества дождливых дней
 
 4)  Регистрация датчика
 
